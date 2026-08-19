@@ -5,7 +5,11 @@ on:
 
 jobs:
   terraform-destroy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, windows, x64]
+
+    defaults:
+      run:
+        working-directory: environment/QA
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -14,13 +18,21 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-      - name: Checkout
+
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check Terraform Version
+        run: terraform --version
+
       - name: Terraform Init
-        working-directory: environment/QA
         run: terraform init
 
+      - name: Import Resource Group
+        run: terraform import 'module.resource-group.azurerm_resource_group.rgs["rg1"]' '/subscriptions/f4cd1db7-8147-4c33-8320-3075bfe9c0b6/resourceGroups/test-rg126'
+
+      - name: Import Storage Account
+        run: terraform import 'module.storage-account.azurerm_storage_account.strg["strg1"]' '/subscriptions/f4cd1db7-8147-4c33-8320-3075bfe9c0b6/resourceGroups/test-rg126/providers/Microsoft.Storage/storageAccounts/teststrg126'
+
       - name: Terraform Destroy
-        working-directory: environment/QA
         run: terraform destroy -auto-approve
