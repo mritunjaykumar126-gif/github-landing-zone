@@ -9,7 +9,7 @@ strg-name = {
 
   strg1 = {
 
-    name                     = "teststrg126"
+    name                     = "teststrg4321126"
     location                 = "central india"
     resource_group_name      = "test-rg126"
     account_replication_type = "GRS"
